@@ -23,7 +23,7 @@ public class DemoController {
         this.auth0ManagementAPIClient = auth0ManagementAPIClient;
     }
 
-    @Operation(summary = "Example endpoint for SPA")
+    @Operation(summary = "Example endpoint for SPA. Auth0 access_token should be provided")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Returns a message", content =
                     { @Content(mediaType = "application/json", schema = @Schema(example = "Hello World")) }),
