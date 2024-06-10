@@ -1,0 +1,62 @@
+{
+  "vpc-provider:account=202797282286:filter.tag:Name=development-dpa-id:region=eu-central-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-094e22591c20a6e25",
+    "vpcCidrBlock": "10.12.0.0/16",
+    "ownerAccountId": "202797282286",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-085967867ee16e369",
+            "cidr": "10.12.200.0/24",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-0f00caae777452d1f"
+          },
+          {
+            "subnetId": "subnet-04c49bc9aa9eb7096",
+            "cidr": "10.12.224.0/24",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-0f00caae777452d1f"
+          },
+          {
+            "subnetId": "subnet-0b3c1f01de8f2bc32",
+            "cidr": "10.12.225.0/24",
+            "availabilityZone": "eu-central-1c",
+            "routeTableId": "rtb-0f00caae777452d1f"
+          }
+        ]
+      },
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0b1483376a1712a31",
+            "cidr": "10.12.0.0/18",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-0485658db6703281c"
+          },
+          {
+            "subnetId": "subnet-023dbe975c89683b1",
+            "cidr": "10.12.64.0/18",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-0485658db6703281c"
+          },
+          {
+            "subnetId": "subnet-0539e4dbafa46fd02",
+            "cidr": "10.12.128.0/18",
+            "availabilityZone": "eu-central-1c",
+            "routeTableId": "rtb-0485658db6703281c"
+          }
+        ]
+      }
+    ]
+  },
+  "hosted-zone:account=202797282286:domainName=dpa-id.de:region=eu-central-1": {
+    "Id": "/hostedzone/Z2MRBHSLXAT5CM",
+    "Name": "dpa-id.de."
+  }
+}

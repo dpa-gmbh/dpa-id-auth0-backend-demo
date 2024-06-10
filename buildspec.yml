@@ -1,0 +1,52 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto21
+      nodejs: 20
+    commands:
+      - apt-get update -y
+      - apt-get install -y maven
+      - apt-get install -y sudo
+      - npm install -g aws-cdk
+      - npm install -g typescript
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+      - echo $STAGE
+      - chmod ugoa+rw /var/run/docker.sock
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 202797282286.dkr.ecr.eu-central-1.amazonaws.com
+      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain dpa-connect --domain-owner 960057802448 --query authorizationToken --output text`
+      - export REPOSITORY_URI=202797282286.dkr.ecr.eu-central-1.amazonaws.com/dpa-id-auth0-backend-demo
+      - export IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - export STAGE=$STAGE
+      - TARGET_IMAGE=$(aws ecr describe-images --registry-id=202797282286 --repository-name dpa-id-auth0-backend-demo --image-ids=imageTag=$IMAGE_TAG 2> /dev/null); export IMAGE_EXISTS=$?
+      - export AWS_REGION=eu-central-1
+  build:
+    commands:
+      - env
+      - chmod -R ugoa+rwX /codebuild/output
+      - export AWS_REGION=eu-central-1
+      - adduser --system maven
+      - chown -R maven /home/maven
+      - sudo -u maven -E mvn verify
+      - chown -R root target
+      - echo Build completed on `date`
+      - docker build --no-cache -t dpa-id-auth0-backend-demo .
+      - docker tag dpa-id-auth0-backend-demo:latest $REPOSITORY_URI:latest
+      - docker tag dpa-id-auth0-backend-demo:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file..
+      - cd ./infrastructure
+      - npm install
+      - npx cdk deploy --require-approval never "dpa-id-auth0-backend-demo*"
+  post_build:
+    commands:
+
+cache:
+  paths:
+    - '/home/maven/.m2/**/*'

@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    min-response-size: 10240
+    mime-types: application/json,application/xml,text/plain
+  forward-headers-strategy: native
+
+spring:
+  application:
+    version: @project.version@
+    name: dpa-id-auth0-backend-demo
+  security:
+    oauth2:
+      audience: VHja0nGBV6VCNJ0jh76oZ1iwLrclTOZC
+      secondAudience: mKU1cZ7l3PnJtXrVOLfV9CENcp44npGR
+      client:
+        provider:
+          dpaid-devel:
+            issuer-uri: https://dpa-id-devel.eu.auth0.com/
+    managementAPI:
+      audience: VHja0nGBV6VCNJ0jh76oZ1iwLrclTOZC
+      url: https://dpa-id-devel.eu.auth0.com
+      client:
+        provider:
+          dpaid:
+            id: VHja0nGBV6VCNJ0jh76oZ1iwLrclTOZC
+            secret: kdxlJTsghDqwgTkxt-B2OWKwyGfzsuIxMJNqhL6vFrNkWysuCm-Xwf-FvuusJW6j
+            issuer-uri: https://dpa-id-devel.eu.auth0.com/api/v2/

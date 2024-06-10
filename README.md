@@ -1,6 +1,5 @@
 # dpa Id Auth0 Backend Demo Application
 
-
 ## Setting Java Version
 In this project we are using **Java 21** version.
 
@@ -24,19 +23,3 @@ You can access the API documentation from below URL
 ```shell
 http://localhost:8080/swagger-ui/index.html
 ```
-
-### Configuration variables
-
-Variables are referred to in Spring's classes using the following notation.
-
-````
-@Value("${path.to.variable}")
-public String testToken = "undefinded"; 
-````
-
-These variables are then defined in AWS Parameter store like so
-
-````
-/config/<application-name>_<stage_name>/path.to.variable
-````
-
