@@ -7,9 +7,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/authorization/v1", produces = "application/json")
@@ -43,8 +51,11 @@ public class DemoController {
     })
     @GetMapping("/rwa/code/validate")
     public ResponseEntity<Auth0ValidateCodeResponseDTO> validateCode(@Schema(name = "code", description = "The code that auth0 returns")
-                                                                         @RequestParam("code") String code) {
+                                                                         @RequestParam("code") String code, HttpServletRequest request) {
         Auth0ValidateCodeResponseDTO auth0CodeResponseDTO = auth0ManagementAPIClient.validateCode(code);
-        return ResponseEntity.ok(auth0CodeResponseDTO);
+        MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
+        String uri = "http://localhost:8000" + "?access_token=" + auth0CodeResponseDTO.getAccess_token() + "&id_token=" + auth0CodeResponseDTO.getId_token();
+        headers.put("Location", List.of(uri));
+      return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
     }
 }
