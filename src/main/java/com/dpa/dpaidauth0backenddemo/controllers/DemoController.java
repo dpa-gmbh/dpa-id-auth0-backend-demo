@@ -54,7 +54,7 @@ public class DemoController {
                                                                          @RequestParam("code") String code, HttpServletRequest request) {
         Auth0ValidateCodeResponseDTO auth0CodeResponseDTO = auth0ManagementAPIClient.validateCode(code);
         MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
-        String uri = "http://localhost:8000" + "?access_token=" + auth0CodeResponseDTO.getAccess_token() + "&id_token=" + auth0CodeResponseDTO.getId_token();
+        String uri = "https://rwa-demo.dpa-id.de" + "?access_token=" + auth0CodeResponseDTO.getAccess_token() + "&id_token=" + auth0CodeResponseDTO.getId_token();
         headers.put("Location", List.of(uri));
       return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
     }
