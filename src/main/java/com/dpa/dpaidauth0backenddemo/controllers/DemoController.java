@@ -7,16 +7,16 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -51,11 +51,22 @@ public class DemoController {
     })
     @GetMapping("/rwa/code/validate")
     public ResponseEntity<Auth0ValidateCodeResponseDTO> validateCode(@Schema(name = "code", description = "The code that auth0 returns")
-                                                                         @RequestParam("code") String code, HttpServletRequest request) {
+                                                                         @RequestParam("code") String code, @RequestParam("state") String state) {
         Auth0ValidateCodeResponseDTO auth0CodeResponseDTO = auth0ManagementAPIClient.validateCode(code);
         MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
-        String uri = "https://rwa-demo.dpa-id.de" + "?access_token=" + auth0CodeResponseDTO.getAccess_token() + "&id_token=" + auth0CodeResponseDTO.getId_token();
+        String redirectUri = getRedirectUri(state);
+        String uri =  redirectUri + "&access_token=" + auth0CodeResponseDTO.getAccess_token() + "&id_token=" + auth0CodeResponseDTO.getId_token();
         headers.put("Location", List.of(uri));
       return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
+    }
+
+    private String getRedirectUri(String state) {
+        if(StringUtils.hasLength(state)){
+            String decode = URLDecoder.decode(state, StandardCharsets.UTF_8);
+            if(decode.contains("http")){
+                return decode;
+            }
+        }
+        return "https://rwa-demo.dpa-id.de";
     }
 }
