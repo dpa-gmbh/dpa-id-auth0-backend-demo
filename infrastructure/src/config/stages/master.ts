@@ -99,6 +99,8 @@ export class MasterConfig implements Configuration {
              */
             springProfile: 'master',
 
+            imageTag: process.env.IMAGE_TAG,
+
             /**
              * Additional environment variables exposed to the application.
              */

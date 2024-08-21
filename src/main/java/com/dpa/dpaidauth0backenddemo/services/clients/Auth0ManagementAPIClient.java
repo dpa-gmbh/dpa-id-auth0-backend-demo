@@ -32,6 +32,9 @@ public class Auth0ManagementAPIClient {
 
   @Value("${spring.security.managementAPI.client.provider.dpaid.issuer-uri:N/A}")
   private String issuerUri;
+
+  private final String redirectUri = "https://backend-demo.dpa-id.de";
+
   private static final ObjectMapper mapper = new ObjectMapper();
 
 
@@ -62,7 +65,7 @@ public class Auth0ManagementAPIClient {
     map.put("client_id", List.of(clientId));
     map.put("client_secret", List.of(clientSecret));
     map.put("grant_type", List.of("authorization_code"));
-    map.put("redirect_uri", List.of("https://backend-demo.dpa-id.de"));
+    map.put("redirect_uri", List.of(redirectUri));
     return createClient()
         .post()
         .uri("/oauth/token")

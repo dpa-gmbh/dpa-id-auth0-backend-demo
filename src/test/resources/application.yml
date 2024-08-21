@@ -1,0 +1,9 @@
+spring:
+  security:
+    oauth2:
+      audience: VHja0nGBV6VCNJ0jh76oZ1iwLrclTOZC
+      secondAudience: mKU1cZ7l3PnJtXrVOLfV9CENcp44npGR
+      client:
+        provider:
+          dpaid-devel:
+            issuer-uri: https://dpa-id-devel.eu.auth0.com/
