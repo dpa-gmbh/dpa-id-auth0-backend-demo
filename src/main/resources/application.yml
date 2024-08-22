@@ -10,6 +10,8 @@ spring:
   application:
     version: @project.version@
     name: dpa-id-auth0-backend-demo
+  config:
+    import: aws-parameterstore:/config/${spring.application.name}/
   security:
     oauth2:
       audience: VHja0nGBV6VCNJ0jh76oZ1iwLrclTOZC
@@ -25,5 +27,5 @@ spring:
         provider:
           dpaid:
             id: mKU1cZ7l3PnJtXrVOLfV9CENcp44npGR
-            secret: kdxlJTsghDqwgTkxt-B2OWKwyGfzsuIxMJNqhL6vFrNkWysuCm-Xwf-FvuusJW6j
+            secret: ${CLIENT_SECRET}
             issuer-uri: https://dpa-id-devel.eu.auth0.com/api/v2/

@@ -2,6 +2,8 @@ package com.dpa.dpaidauth0backenddemo.controllers;
 
 import com.dpa.dpaidauth0backenddemo.services.clients.Auth0ManagementAPIClient;
 import com.dpa.dpaidauth0backenddemo.services.clients.dto.Auth0ValidateCodeResponseDTO;
+import com.dpa.dpaidauth0backenddemo.services.clients.dto.SessionStatusResponseDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,6 +60,15 @@ public class DemoController {
         String uri =  redirectUri + "&access_token=" + auth0CodeResponseDTO.getAccess_token() + "&id_token=" + auth0CodeResponseDTO.getId_token();
         headers.put("Location", List.of(uri));
       return new ResponseEntity<>(headers, HttpStatus.valueOf(302));
+    }
+
+    @Operation(summary = "Check session is valid for a user. Provide access_token for authorization.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Returns session is valid or invalid"),
+    })
+    @GetMapping("/rwa/sessions/status")
+    public ResponseEntity<SessionStatusResponseDTO> checkSessions(@RequestHeader("Authorization") String access_token) throws JsonProcessingException {
+        return ResponseEntity.ok(auth0ManagementAPIClient.checkUserSessionStatus(access_token));
     }
 
     private String getRedirectUri(String state) {

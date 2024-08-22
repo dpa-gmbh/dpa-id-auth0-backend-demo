@@ -13,6 +13,7 @@ import {LogGroup, RetentionDays} from 'aws-cdk-lib/aws-logs'
 import {RemovalPolicy} from 'aws-cdk-lib'
 import {Repository} from "aws-cdk-lib/aws-ecr";
 import { Secret } from "aws-cdk-lib/aws-secretsmanager";
+import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 export interface TaskDefinitionProperties {
     stackSuffix: string
@@ -43,6 +44,9 @@ export class DpaIdAuth0BackendDemoTaskDefinition extends Construct {
             memoryLimitMiB: settings.memoryLimit,
             cpu: settings.cpu
         })
+
+        let clientSecret = this.getParameterFromSSM("client_secret");
+
         const appContainer = this.instance.addContainer('Container', {
             image: ContainerImage.fromEcrRepository(Repository.fromRepositoryArn(this, "ecr-repo",
                 settings.repositoryArn), settings.imageTag),
@@ -52,6 +56,7 @@ export class DpaIdAuth0BackendDemoTaskDefinition extends Construct {
             containerName: `dpa-id-auth0-backend-demo`,
             environment: {
                 SPRING_PROFILES_ACTIVE: settings.springProfile,
+                CLIENT_SECRET: clientSecret,
                 LaceworkServerUrl: "https://agent.euprodn.lacework.net",
                 LaceworkConfig: `{"memlimit":"${Math.floor(
                     (settings.memoryLimit * this.laceworkMemoryPercentage) / 100
@@ -103,5 +108,9 @@ export class DpaIdAuth0BackendDemoTaskDefinition extends Construct {
             container: laceworkContainer,
             condition: ContainerDependencyCondition.SUCCESS,
         });
+    }
+    private getParameterFromSSM(suffix: string) {
+
+        return ssm.StringParameter.valueForStringParameter(this, `/config/dpa-id-auth0-backend-demo/${suffix}`);
     }
 }
