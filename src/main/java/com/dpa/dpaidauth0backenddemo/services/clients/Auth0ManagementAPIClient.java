@@ -33,6 +33,9 @@ public class Auth0ManagementAPIClient {
   @Value("${spring.security.managementAPI.client.provider.dpaid.issuer-uri:N/A}")
   private String issuerUri;
 
+  @Value("${spring.security.managementAPI.client.provider.dpaid.audience:N/A}")
+  private String managementAPIAudience;
+
   private final String redirectUri = "https://backend-demo.dpa-id.de";
 
   private static final ObjectMapper mapper = new ObjectMapper();
@@ -51,7 +54,7 @@ public class Auth0ManagementAPIClient {
           .body(mapper.writeValueAsString(Map.of("client_id", clientId,
               "client_secret", clientSecret,
               "grant_type", "client_credentials",
-              "audience", issuerUri)))
+              "audience", managementAPIAudience)))
           .retrieve()
           .body(Auth0AccessTokenDTO.class);
     } catch (JsonProcessingException e) {

@@ -19,7 +19,7 @@ spring:
       client:
         provider:
           dpaid-devel:
-            issuer-uri: https://dpa-id-devel.eu.auth0.com/
+            issuer-uri: https://auth-devel.dpa-id.de/
     managementAPI:
       audience: mKU1cZ7l3PnJtXrVOLfV9CENcp44npGR
       url: https://auth-devel.dpa-id.de
@@ -28,4 +28,5 @@ spring:
           dpaid:
             id: mKU1cZ7l3PnJtXrVOLfV9CENcp44npGR
             secret: ${CLIENT_SECRET}
-            issuer-uri: https://dpa-id-devel.eu.auth0.com/api/v2/
+            issuer-uri: https://auth-devel.dpa-id.de/api/v2/
+            audience: https://dpa-id-devel.eu.auth0.com/api/v2/
