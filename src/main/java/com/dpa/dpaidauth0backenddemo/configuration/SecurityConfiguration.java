@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -17,6 +18,8 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 
 @Configuration
@@ -40,6 +43,14 @@ public class SecurityConfiguration {
         .httpBasic(Customizer.withDefaults())
         .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
+        // SECURITY HEADERS
+            .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+                    .httpStrictTransportSecurity(sec -> sec.maxAgeInSeconds(31536000)
+                            .preload(true)
+                            .includeSubDomains(true))
+                    .contentTypeOptions(Customizer.withDefaults())
+                    .referrerPolicy(policy -> policy.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                    .addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "0")))
         .build();
 
   }
