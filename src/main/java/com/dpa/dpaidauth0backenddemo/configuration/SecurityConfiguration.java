@@ -50,7 +50,10 @@ public class SecurityConfiguration {
                             .includeSubDomains(true))
                     .contentTypeOptions(Customizer.withDefaults())
                     .referrerPolicy(policy -> policy.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
-                    .addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "0")))
+                    .addHeaderWriter(new StaticHeadersWriter("X-Permitted-Cross-Domain-Policies", "none"))
+                    .contentSecurityPolicy(csp -> csp
+                            .policyDirectives("default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'")
+                    ))
         .build();
 
   }
